@@ -1,7 +1,10 @@
 // // frontend/src/App.jsx
 // import React, { useState, useEffect, useRef } from 'react';
+// import ReactMarkdown from 'react-markdown';
+// import remarkGfm from 'remark-gfm';
 // import api from './api.jsx';
 // import './styles.css';
+
 
 // function DaySeparator({ dateStr }) {
 //   return (
@@ -84,11 +87,9 @@
 //     // eslint-disable-next-line
 //   }, []);
 
-//   useEffect(() => {
-//     if (bottomRef.current) {
-//       setTimeout(() => bottomRef.current.scrollIntoView({ behavior: 'smooth' }), 80);
-//     }
-//   }, [messages]);
+//  useEffect(() => {
+//     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+//   }, [messages, typing]);
 
 //   const send = async () => {
 //     if (!input.trim()) return;
@@ -201,27 +202,184 @@
 //     </div>
 //   );
 // }
+// // import React, { useState, useEffect, useRef } from 'react';
+// // import ReactMarkdown from 'react-markdown';
+// // import remarkGfm from 'remark-gfm';
+// // import api from './api.jsx';
+// // import './styles.css';
+
+// // function DaySeparator({ dateStr }) {
+// //   return (
+// //     <div className="day-sep" aria-hidden>
+// //       <span>{dateStr}</span>
+// //     </div>
+// //   );
+// // }
+
+// // function MessageBubble({ m }) {
+// //   const isUser = m.role === 'user';
+// //   const cls = isUser ? 'bubble user' : 'bubble ai';
+
+// //   return (
+// //     <div
+// //       className={cls}
+// //       title={`${m.tokens || 0} tokens • ${new Date(m.createdAt).toLocaleString()}`}
+// //     >
+// //       <div className="role">{isUser ? 'You' : 'AI'}</div>
+
+// //       {/* 🔥 STRUCTURED AI OUTPUT */}
+// //       <div className="text">
+// //         {isUser ? (
+// //           <span>{m.text}</span>
+// //         ) : (
+// //           <ReactMarkdown
+// //             remarkPlugins={[remarkGfm]}
+// //             components={{
+// //               ul: ({ node, ...props }) => <ul className="md-ul" {...props} />,
+// //               ol: ({ node, ...props }) => <ol className="md-ol" {...props} />,
+// //               li: ({ node, ...props }) => <li className="md-li" {...props} />,
+// //               h2: ({ node, ...props }) => <h2 className="md-h2" {...props} />,
+// //               h3: ({ node, ...props }) => <h3 className="md-h3" {...props} />,
+// //               p: ({ node, ...props }) => <p className="md-p" {...props} />
+// //             }}
+// //           >
+// //             {m.text}
+// //           </ReactMarkdown>
+// //         )}
+// //       </div>
+
+// //       <div className="meta">{m.tokens || 0} tokens</div>
+// //     </div>
+// //   );
+// // }
+
+// // function TypingBubble() {
+// //   return (
+// //     <div className="message-row ai">
+// //       <div className="bubble ai typing">
+// //         <div className="dots">
+// //           <span /><span /><span />
+// //         </div>
+// //       </div>
+// //     </div>
+// //   );
+// // }
+
+// // function groupByDay(messages) {
+// //   const groups = [];
+// //   messages.forEach((m) => {
+// //     const key = new Date(m.createdAt).toISOString().slice(0, 10);
+// //     const existing = groups.find(g => g.dateKey === key);
+// //     if (existing) existing.messages.push(m);
+// //     else groups.push({ dateKey: key, messages: [m] });
+// //   });
+// //   return groups;
+// // }
+
+// // export default function App() {
+// //   const [messages, setMessages] = useState([]);
+// //   const [input, setInput] = useState('');
+// //   const [loading, setLoading] = useState(false);
+// //   const [typing, setTyping] = useState(false);
+// //   const [models, setModels] = useState([]);
+// //   const [selectedModel, setSelectedModel] = useState('');
+// //   const bottomRef = useRef(null);
+
+// //   useEffect(() => {
+// //     api.getMessages().then(res => {
+// //       if (res.success) setMessages(res.messages);
+// //     });
+// //     api.getModels().then(res => {
+// //       if (res.success) {
+// //         setModels(res.models);
+// //         setSelectedModel(res.models[0]?.id);
+// //       }
+// //     });
+// //   }, []);
+
+// //   useEffect(() => {
+// //     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+// //   }, [messages, typing]);
+
+// //   const send = async () => {
+// //     if (!input.trim()) return;
+// //     setTyping(true);
+// //     const text = input;
+// //     setInput('');
+
+// //     const res = await api.postMessage(text, selectedModel);
+// //     if (res.success) setMessages(res.messages);
+
+// //     setTyping(false);
+// //   };
+
+// //   return (
+// //     <div className="app">
+// //       <h1>AI Chat App</h1>
+
+// //       <div className="chatContainer">
+// //         <div className="messages">
+// //           {groupByDay(messages).map(g => (
+// //             <div key={g.dateKey}>
+// //               <DaySeparator dateStr={g.dateKey} />
+// //               {g.messages.map(m => (
+// //                 <div key={m._id} className={`message-row ${m.role}`}>
+// //                   <MessageBubble m={m} />
+// //                 </div>
+// //               ))}
+// //             </div>
+// //           ))}
+// //           {typing && <TypingBubble />}
+// //           <div ref={bottomRef} />
+// //         </div>
+
+// //         <div className="inputBar">
+// //           <textarea
+// //             value={input}
+// //             onChange={e => setInput(e.target.value)}
+// //             placeholder="Type a message..."
+// //             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
+// //           />
+// //           <button onClick={send} disabled={loading}>
+// //             Send
+// //           </button>
+// //         </div>
+// //       </div>
+// //     </div>
+// //   );
+// // }
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import api from './api.jsx';
 import './styles.css';
 
+/* =======================
+   Day Separator
+======================= */
 function DaySeparator({ dateStr }) {
   return (
-    <div className="day-sep">
+    <div className="day-sep" aria-hidden>
       <span>{dateStr}</span>
     </div>
   );
 }
 
+/* =======================
+   Message Bubble
+======================= */
 function MessageBubble({ m }) {
   const isUser = m.role === 'user';
+  const cls = isUser ? 'bubble user' : 'bubble ai';
 
   return (
-    <div className={`bubble ${isUser ? 'user' : 'ai'}`}>
+    <div
+      className={cls}
+      title={`${m.tokens || 0} tokens • ${new Date(m.createdAt).toLocaleString()}`}
+    >
       <div className="role">{isUser ? 'You' : 'AI'}</div>
 
+      {/* TEXT / MARKDOWN */}
       <div className="text">
         {isUser ? (
           <span>{m.text}</span>
@@ -232,9 +390,12 @@ function MessageBubble({ m }) {
               pre: ({ node, ...props }) => (
                 <pre className="md-pre" {...props} />
               ),
-              code: ({ node, ...props }) => (
-                <code className="md-code" {...props} />
-              )
+              code: ({ node, inline, ...props }) =>
+                inline ? (
+                  <code className="md-inline-code" {...props} />
+                ) : (
+                  <code className="md-code" {...props} />
+                )
             }}
           >
             {m.text}
@@ -247,11 +408,14 @@ function MessageBubble({ m }) {
   );
 }
 
+/* =======================
+   Typing Indicator
+======================= */
 function TypingBubble() {
   return (
     <div className="message-row ai">
-      <div className="bubble ai typing">
-        <div className="dots">
+      <div className="bubble ai typing" aria-hidden>
+        <div className="dots" aria-hidden>
           <span /><span /><span />
         </div>
       </div>
@@ -259,79 +423,202 @@ function TypingBubble() {
   );
 }
 
+/* =======================
+   Group Messages by Day
+======================= */
 function groupByDay(messages) {
-  const groups = {};
-  messages.forEach(m => {
-    const key = new Date(m.createdAt).toISOString().slice(0, 10);
-    groups[key] = groups[key] || [];
-    groups[key].push(m);
+  const groups = [];
+  messages.forEach((m) => {
+    const d = new Date(m.createdAt);
+    const key = d.toISOString().slice(0, 10);
+    const existing = groups.find(g => g.dateKey === key);
+    if (existing) existing.messages.push(m);
+    else groups.push({ dateKey: key, date: d, messages: [m] });
   });
-  return Object.entries(groups);
+  groups.sort((a, b) => a.dateKey.localeCompare(b.dateKey));
+  return groups;
 }
 
+/* =======================
+   MAIN APP
+======================= */
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
+  const [models, setModels] = useState([]);
+  const [selectedModel, setSelectedModel] = useState('');
+  const [stats, setStats] = useState({ totalMessages: 0, totalTokens: 0 });
   const bottomRef = useRef(null);
 
+  /* -------- Fetch all data -------- */
+  const fetchAll = async () => {
+    try {
+      const [res, modelsRes, statsRes] = await Promise.all([
+        api.getMessages(),
+        api.getModels(),
+        api.getStats()
+      ]);
+
+      if (res?.success) setMessages(res.messages || []);
+
+      if (modelsRes?.success) {
+        setModels(modelsRes.models || []);
+        if (!selectedModel && modelsRes.models?.length > 0) {
+          setSelectedModel(modelsRes.models[0].id);
+        }
+      }
+
+      if (statsRes?.success) {
+        setStats({
+          totalMessages: statsRes.totalMessages,
+          totalTokens: statsRes.totalTokens
+        });
+      }
+    } catch (err) {
+      console.error('FetchAll error:', err);
+    }
+  };
+
   useEffect(() => {
-    api.getMessages().then(res => {
-      if (res.success) setMessages(res.messages);
-    });
+    fetchAll();
+    // eslint-disable-next-line
   }, []);
 
+  /* -------- Auto scroll -------- */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, typing]);
 
+  /* -------- Send Message -------- */
   const send = async () => {
     if (!input.trim()) return;
+
+    setLoading(true);
     setTyping(true);
-    const text = input;
+
+    const userText = input.trim();
     setInput('');
 
-    const res = await api.postMessage(text);
-    if (res.success) setMessages(res.messages);
-
-    setTyping(false);
+    try {
+      const res = await api.postMessage(userText, selectedModel);
+      if (res?.success) {
+        setMessages(res.messages || []);
+        const st = await api.getStats();
+        if (st?.success) {
+          setStats({
+            totalMessages: st.totalMessages,
+            totalTokens: st.totalTokens
+          });
+        }
+      }
+    } catch (err) {
+      console.error('Send error:', err);
+    } finally {
+      setLoading(false);
+      setTyping(false);
+    }
   };
+
+  /* -------- Clear Chat -------- */
+  const clearAll = async () => {
+    if (!confirm('Clear all chat history? This cannot be undone.')) return;
+    try {
+      const res = await api.clearMessages();
+      if (res?.success) {
+        setMessages([]);
+        setStats({ totalMessages: 0, totalTokens: 0 });
+      }
+    } catch (err) {
+      console.error('Clear error:', err);
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  };
+
+  const grouped = groupByDay(messages);
 
   return (
     <div className="app">
-      <h1>AI Chat App</h1>
+      <h1 id="chat-title">AI Chat App</h1>
 
-      <div className="chatContainer">
-        {/* MESSAGES */}
-        <div className="messages">
-          {messages.length === 0 && (
-            <div className="empty">No messages yet — say hi!</div>
-          )}
+      <div className="chatContainer" role="application" aria-labelledby="chat-title">
+        {/* ---------- TOP BAR ---------- */}
+        <div className="topbar" role="region" aria-label="Chat controls">
+          <div className="controls">
+            <label className="model-select">
+              Model:
+              <select
+                value={selectedModel}
+                onChange={(e) => setSelectedModel(e.target.value)}
+              >
+                {models.map(m => (
+                  <option key={m.id} value={m.id}>{m.name}</option>
+                ))}
+              </select>
+            </label>
 
-          {groupByDay(messages).map(([date, msgs]) => (
-            <div key={date}>
-              <DaySeparator dateStr={date} />
-              {msgs.map(m => (
-                <div key={m._id} className={`message-row ${m.role}`}>
-                  <MessageBubble m={m} />
-                </div>
-              ))}
+            <div className="stats" aria-hidden>
+              <div>{stats.totalMessages} msgs</div>
+              <div>{stats.totalTokens} tokens</div>
             </div>
-          ))}
+
+            <button
+              className="clear-btn"
+              onClick={clearAll}
+              aria-label="Clear chat history"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        {/* ---------- MESSAGES ---------- */}
+        <div className="messages" role="log" aria-live="polite">
+          {grouped.length === 0 ? (
+            <div className="empty">No messages yet — say hi!</div>
+          ) : (
+            grouped.map(g => (
+              <div key={g.dateKey} className="day-group">
+                <DaySeparator dateStr={new Date(g.dateKey).toLocaleDateString()} />
+                {g.messages.map(m => (
+                  <div
+                    key={m._id || m.createdAt}
+                    className={`message-row ${m.role === 'user' ? 'user' : 'ai'}`}
+                  >
+                    <MessageBubble m={m} />
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
 
           {typing && <TypingBubble />}
           <div ref={bottomRef} />
         </div>
 
-        {/* INPUT ALWAYS AT BOTTOM */}
-        <div className="inputBar">
+        {/* ---------- INPUT ---------- */}
+        <div className="inputBar" role="region" aria-label="Message input">
           <textarea
             value={input}
-            onChange={e => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={onKeyDown}
             placeholder="Type a message..."
-            onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
+            aria-label="Type a message"
           />
-          <button onClick={send}>Send</button>
+          <button
+            onClick={send}
+            disabled={loading}
+            aria-label="Send message"
+          >
+            {loading ? 'Sending...' : 'Send'}
+          </button>
         </div>
       </div>
     </div>
