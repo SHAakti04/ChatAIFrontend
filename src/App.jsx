@@ -209,7 +209,7 @@ import './styles.css';
 
 function DaySeparator({ dateStr }) {
   return (
-    <div className="day-sep" aria-hidden>
+    <div className="day-sep">
       <span>{dateStr}</span>
     </div>
   );
@@ -217,16 +217,11 @@ function DaySeparator({ dateStr }) {
 
 function MessageBubble({ m }) {
   const isUser = m.role === 'user';
-  const cls = isUser ? 'bubble user' : 'bubble ai';
 
   return (
-    <div
-      className={cls}
-      title={`${m.tokens || 0} tokens • ${new Date(m.createdAt).toLocaleString()}`}
-    >
+    <div className={`bubble ${isUser ? 'user' : 'ai'}`}>
       <div className="role">{isUser ? 'You' : 'AI'}</div>
 
-      {/* 🔥 STRUCTURED AI OUTPUT */}
       <div className="text">
         {isUser ? (
           <span>{m.text}</span>
@@ -234,12 +229,12 @@ function MessageBubble({ m }) {
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
             components={{
-              ul: ({ node, ...props }) => <ul className="md-ul" {...props} />,
-              ol: ({ node, ...props }) => <ol className="md-ol" {...props} />,
-              li: ({ node, ...props }) => <li className="md-li" {...props} />,
-              h2: ({ node, ...props }) => <h2 className="md-h2" {...props} />,
-              h3: ({ node, ...props }) => <h3 className="md-h3" {...props} />,
-              p: ({ node, ...props }) => <p className="md-p" {...props} />
+              pre: ({ node, ...props }) => (
+                <pre className="md-pre" {...props} />
+              ),
+              code: ({ node, ...props }) => (
+                <code className="md-code" {...props} />
+              )
             }}
           >
             {m.text}
@@ -265,34 +260,24 @@ function TypingBubble() {
 }
 
 function groupByDay(messages) {
-  const groups = [];
-  messages.forEach((m) => {
+  const groups = {};
+  messages.forEach(m => {
     const key = new Date(m.createdAt).toISOString().slice(0, 10);
-    const existing = groups.find(g => g.dateKey === key);
-    if (existing) existing.messages.push(m);
-    else groups.push({ dateKey: key, messages: [m] });
+    groups[key] = groups[key] || [];
+    groups[key].push(m);
   });
-  return groups;
+  return Object.entries(groups);
 }
 
 export default function App() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(false);
   const [typing, setTyping] = useState(false);
-  const [models, setModels] = useState([]);
-  const [selectedModel, setSelectedModel] = useState('');
   const bottomRef = useRef(null);
 
   useEffect(() => {
     api.getMessages().then(res => {
       if (res.success) setMessages(res.messages);
-    });
-    api.getModels().then(res => {
-      if (res.success) {
-        setModels(res.models);
-        setSelectedModel(res.models[0]?.id);
-      }
     });
   }, []);
 
@@ -306,7 +291,7 @@ export default function App() {
     const text = input;
     setInput('');
 
-    const res = await api.postMessage(text, selectedModel);
+    const res = await api.postMessage(text);
     if (res.success) setMessages(res.messages);
 
     setTyping(false);
@@ -317,21 +302,28 @@ export default function App() {
       <h1>AI Chat App</h1>
 
       <div className="chatContainer">
+        {/* MESSAGES */}
         <div className="messages">
-          {groupByDay(messages).map(g => (
-            <div key={g.dateKey}>
-              <DaySeparator dateStr={g.dateKey} />
-              {g.messages.map(m => (
+          {messages.length === 0 && (
+            <div className="empty">No messages yet — say hi!</div>
+          )}
+
+          {groupByDay(messages).map(([date, msgs]) => (
+            <div key={date}>
+              <DaySeparator dateStr={date} />
+              {msgs.map(m => (
                 <div key={m._id} className={`message-row ${m.role}`}>
                   <MessageBubble m={m} />
                 </div>
               ))}
             </div>
           ))}
+
           {typing && <TypingBubble />}
           <div ref={bottomRef} />
         </div>
 
+        {/* INPUT ALWAYS AT BOTTOM */}
         <div className="inputBar">
           <textarea
             value={input}
@@ -339,9 +331,7 @@ export default function App() {
             placeholder="Type a message..."
             onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send()}
           />
-          <button onClick={send} disabled={loading}>
-            Send
-          </button>
+          <button onClick={send}>Send</button>
         </div>
       </div>
     </div>
