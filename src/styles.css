@@ -1,61 +1,82 @@
-/* styles.css — corrected layout and bubble alignment (message-row) */
-
-/* --- Theme / Variables --- */
+/* =========================
+   Global Theme Variables
+========================= */
 :root {
   --bg: #f3f6f9;
   --nav-grad: linear-gradient(90deg,#3b82f6,#60a5fa 60%);
   --card-bg: #ffffff;
   --muted: #6b7280;
-  --accent: #007aff;
-  --accent-2: #4a90e2;
+  --accent: #2563eb;
   --ai-bubble: #eef2f6;
   --shadow-1: 0 6px 20px rgba(15, 23, 42, 0.08);
   --shadow-2: 0 2px 8px rgba(2,6,23,0.06);
   --radius-lg: 14px;
   --radius-md: 10px;
-  --focus: rgba(74,144,226,0.22);
   --max-width: 920px;
-  --nav-height: 72px;
+  --nav-height: 64px;
 }
 
-/* Reset */
-* { box-sizing: border-box; }
-html, body { height: 100%; margin: 0; padding: 0; }
+/* =========================
+   Reset & Base
+========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
   background: linear-gradient(180deg, #f7f9fb 0%, var(--bg) 100%);
   color: #111827;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* App and navbar */
+/* =========================
+   App Layout
+========================= */
 .app {
-  min-height: 100vh;
-  display: grid;
-  grid-template-rows: auto 1fr;
-  justify-items: center;
-  padding: 28px;
-  padding-top: calc(var(--nav-height) + 32px);
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px;
+  padding-top: calc(var(--nav-height) + 12px);
 }
+
+/* =========================
+   Fixed Header
+========================= */
 .app > h1 {
   position: fixed;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: 8px;
+  left: 8px;
+  right: 8px;
   height: var(--nav-height);
   margin: 0;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-radius: 12px;
   background: var(--nav-grad);
   color: #fff;
-  font-weight: 700;
-  z-index: 1200;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  z-index: 1000;
 }
 
-/* Chat container: topbar | messages | input */
+/* =========================
+   Chat Container
+========================= */
 .chatContainer {
   width: 100%;
   max-width: var(--max-width);
-  height: min(78vh, 880px);
+  height: calc(100svh - var(--nav-height) - 32px);
   background: var(--card-bg);
   box-shadow: var(--shadow-1);
   border-radius: var(--radius-lg);
@@ -64,126 +85,236 @@ body {
   overflow: hidden;
 }
 
-/* Topbar */
+/* =========================
+   Top Bar
+========================= */
 .topbar {
-  padding: 10px 14px;
-  border-bottom: 1px solid rgba(15,23,42,0.04);
+  padding: 8px 10px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
-.controls { display:flex; gap:12px; align-items:center; }
-.model-select { display:inline-flex; gap:8px; align-items:center; padding:6px 8px; border-radius:8px; border:1px solid rgba(0,0,0,0.05); }
-.model-select select { border:none; background:transparent; outline:none; }
 
-/* Messages list (center row) */
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.model-select {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.08);
+}
+
+.model-select select {
+  border: none;
+  background: transparent;
+  outline: none;
+}
+
+.stats {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+.clear-btn {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: none;
+  background: #ef4444;
+  color: #fff;
+}
+
+/* =========================
+   Messages Area
+========================= */
 .messages {
-  padding: 18px;
+  flex: 1;
+  padding: 12px;
   overflow-y: auto;
-  display:flex;
+  display: flex;
   flex-direction: column;
-  gap: 12px;
-  background: linear-gradient(180deg, rgba(246,248,250,0.6), rgba(250,251,252,0.6));
-  padding-right: 24px; /* give space for scrollbar */
+  gap: 10px;
+  background: linear-gradient(180deg, #f8fafc, #f1f5f9);
 }
 
-/* Ensure day groups are stacked vertically */
-.day-group { display: flex; flex-direction: column; gap: 10px; }
+.day-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 
-/* Message row wrapper controls alignment */
 .message-row {
   display: flex;
   width: 100%;
-  padding: 0 6px; /* small horizontal padding so tails don't hit edges */
 }
-.message-row.ai { justify-content: flex-start; }
-.message-row.user { justify-content: flex-end; }
 
-/* Bubble visual */
+.message-row.user {
+  justify-content: flex-end;
+}
+
+.message-row.ai {
+  justify-content: flex-start;
+}
+
+/* =========================
+   Chat Bubbles
+========================= */
 .bubble {
-  display: block;
-  max-width: 72%;
-  padding: 12px 16px;
+  max-width: min(88%, 560px);
+  padding: 10px 14px;
   border-radius: 14px;
+  font-size: 0.95rem;
+  line-height: 1.45;
   box-shadow: var(--shadow-2);
   position: relative;
-  font-size: 0.98rem;
-  line-height: 1.45;
-  margin: 6px 0;
-  background: var(--ai-bubble);
-  color: #0b1220;
+  word-wrap: break-word;
 }
 
-/* Role (small label) */
-.bubble .role { font-weight:700; font-size:0.72rem; margin-bottom:6px; opacity:0.85; }
+.bubble .role {
+  font-size: 0.7rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+  opacity: 0.8;
+}
 
-/* User bubble overrides */
+.bubble .meta {
+  margin-top: 6px;
+  font-size: 0.7rem;
+  opacity: 0.6;
+}
+
+/* User Bubble */
 .bubble.user {
-  background: linear-gradient(180deg,#0f62ff,#004bc1);
+  background: linear-gradient(180deg,#2563eb,#1e40af);
   color: #fff;
-  text-align: left;
-}
-.bubble.user .role { color: rgba(255,255,255,0.95); text-transform:uppercase; letter-spacing:0.06em; }
-
-/* User tail (positioned so it doesn't overlap neighbors) */
-.bubble.user::after {
-  content: "";
-  position: absolute;
-  right: -8px;
-  bottom: 8px;
-  width: 12px;
-  height: 12px;
-  transform: rotate(45deg);
-  background: linear-gradient(180deg,#0f62ff,#004bc1);
-  box-shadow: 0 6px 12px rgba(3, 82, 194, 0.06);
-  border-radius: 2px;
 }
 
-/* AI bubble overrides */
+/* AI Bubble */
 .bubble.ai {
-  background: linear-gradient(180deg, #f3f6f8, #eef2f6);
-  color: #071124;
-  text-align: left;
-}
-.bubble.ai::after {
-  content:"";
-  position: absolute;
-  left: -8px;
-  bottom: 8px;
-  width: 12px;
-  height: 12px;
-  transform: rotate(45deg);
-  background: linear-gradient(180deg,#eef2f6,#eef2f6);
-  box-shadow: 0 6px 12px rgba(2,6,23,0.02);
-  border-radius: 2px;
+  background: var(--ai-bubble);
+  color: #111827;
 }
 
-/* Meta (token count) */
-.bubble .meta { margin-top:8px; font-size:0.72rem; color:rgba(242, 245, 243, 0.804); }
+/* =========================
+   Typing Indicator
+========================= */
+.bubble.typing {
+  width: 60px;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
 
-/* Typing bubble (same as ai bubble but small) */
-.bubble.typing { width:72px; padding:10px; display:flex; align-items:center; justify-content:center; }
-.dots { display:inline-flex; gap:6px; }
-.dots span { width:8px; height:8px; border-radius:50%; background:rgba(0,0,0,0.12); animation:bounce 1s infinite; }
-.dots span:nth-child(2){ animation-delay:0.12s } .dots span:nth-child(3){ animation-delay:0.24s }
-@keyframes bounce { 0%,80%,100%{transform:translateY(0);opacity:.6} 40%{transform:translateY(-6px);opacity:1} }
+.dots {
+  display: flex;
+  gap: 6px;
+}
 
-/* Day separator */
-.day-sep { display:flex; align-items:center; justify-content:center; margin:8px 0; color:var(--muted); font-weight:700; }
-.day-sep span { background:rgba(15,23,42,0.04); padding:6px 12px; border-radius:999px; }
+.dots span {
+  width: 6px;
+  height: 6px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
 
-/* Input (bottom row) */
-.inputBar { display:flex; gap:12px; padding:14px; border-top:1px solid rgba(0,0,0,0.04); background:linear-gradient(180deg, #fff, #fbfdff); }
-textarea { flex:1; min-height:56px; padding:12px 14px; border-radius:10px; border:1px solid rgba(0,0,0,0.06); resize:none; font-size:1rem; }
-button { height:48px; min-width:96px; padding:0 18px; border-radius:10px; border:none; background:linear-gradient(180deg,#4a90e2,#2f78d6); color:#fff; font-weight:700; }
+.dots span:nth-child(2) { animation-delay: .15s; }
+.dots span:nth-child(3) { animation-delay: .3s; }
 
-/* Empty state */
-.empty { padding:18px; text-align:center; color:var(--muted); font-style:italic; }
+@keyframes bounce {
+  0%,80%,100% { transform: translateY(0); opacity: .5; }
+  40% { transform: translateY(-6px); opacity: 1; }
+}
 
-/* Responsive */
-@media (max-width:640px) {
-  .bubble { max-width: 92%; }
-  .chatContainer { height: 86vh; }
-  .app { padding-top: calc(var(--nav-height) + 20px); }
+/* =========================
+   Day Separator
+========================= */
+.day-sep {
+  display: flex;
+  justify-content: center;
+  margin: 6px 0;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.day-sep span {
+  padding: 4px 10px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 999px;
+}
+
+/* =========================
+   Input Bar
+========================= */
+.inputBar {
+  display: flex;
+  gap: 8px;
+  padding: 10px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  background: #fff;
+}
+
+textarea {
+  flex: 1;
+  min-height: 44px;
+  max-height: 120px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  border: 1px solid rgba(0,0,0,0.08);
+  resize: none;
+}
+
+button {
+  min-width: 72px;
+  height: 44px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(180deg,#3b82f6,#2563eb);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* =========================
+   Empty State
+========================= */
+.empty {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--muted);
+  padding: 20px;
+}
+
+/* =========================
+   Mobile Optimizations
+========================= */
+@media (max-width: 480px) {
+  .bubble {
+    max-width: 95%;
+    font-size: 0.9rem;
+  }
+
+  .app > h1 {
+    font-size: 1rem;
+    padding: 10px 12px;
+  }
+
+  textarea {
+    font-size: 0.9rem;
+  }
+
+  button {
+    min-width: 64px;
+  }
 }
